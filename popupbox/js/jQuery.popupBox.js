@@ -1,13 +1,10 @@
 ﻿(function ($) {
-
-
     var defaults = {
         popupMinWidth  : '400',
         popupMinHeight: '200',
         popupObjClass : 'popupBox',
         animation: 'fadeIn' //,slideDown',
-
-    }
+   }
 
     var methods = {
 
