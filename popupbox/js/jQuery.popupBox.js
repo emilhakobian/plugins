@@ -3,15 +3,26 @@
         popupMinWidth  : '400',
         popupMinHeight: '200',
         popupObjClass : 'popupBox',
-        animation: 'fadeIn' //,slideDown',
-   }
+        animation: 'fadeIn', //,slideDown',
+        onOK: function () {},
+        onNO: function () { methods.removePopup(); },
+        onCANCEL: function () { }
+    }
+    
 
     var methods = {
+        
+        init: function (object, options) {
 
-        init: function (object) {
-            this.object = object;
-            this.popupObj = $('.' + defaults.popupObjClass);
-            methods.openPopup()
+            var settings = $.extend(defaults, options);
+
+            return object.each(function () {
+                $(this).click(function () {
+                    methods.object = $(this);
+                    methods.popupObj = $('.' + defaults.popupObjClass);
+                    methods.openPopup()
+                })
+            })
         },
 
         removePopup: function () {
@@ -25,8 +36,8 @@
         getPopupInfo: function () {
             var popupObjectInfo = {}
 
-            popupObjectInfo.title = this.object.attr('title');
-            popupObjectInfo.text = this.object.attr('text');
+            popupObjectInfo.title = methods.object.attr('title');
+            popupObjectInfo.text = methods.object.attr('text');
             popupObjectInfo.type = 'confirm';
 
             return popupObjectInfo;
@@ -43,11 +54,6 @@
                     return '<input type="button" value="Ok" class="popupButton" id="popupOKButton" /> <input type="button" value="No" class="popupButton" id="popupNOButton"/>';
                     break
             }
-        },
-
-        popupPosition: function () {
-
-
         },
 
         openPopup: function () {
@@ -67,35 +73,15 @@
             $('body').append('<div class="BGOverlay"> </div>').append(htmlStr);
             
             $('.' + defaults.popupObjClass).slideDown().css({ 'left': ($(window).width() - defaults.popupMinWidth) / 2, 'top': '100px' });
-
-            $('#popupOKButton').on('click', this.onOKClick);
-            $('#popupNOButton').on('click', this.onNOClick)
-            $('#popupCANCELButton').on('click', this.onCANCELClick)
+            
+            $('#popupOKButton').on('click', defaults.onOK);
+            $('#popupNOButton').on('click', defaults.onNO)
+            $('#popupCANCELButton').on('click', defaults.onCANCEL)
 
         },
-
-        onOKClick: function () {
-            console.log('ok clicked');
-        },
-
-        onNOClick: function () {
-            console.log('no clicked');
-            methods.removePopup();
-        },
-
-        onCANCELClick: function () {
-            console.log('cancel clicked');
-        }
-        
     }
 
     $.fn.popupBox = function (options) {
-        $(this).each(function () {
-            $(this).click(function () {
-                methods.init($(this));
-            })
-            
-        })
-        
+        methods.init($(this), options);
     }
 })(jQuery);
